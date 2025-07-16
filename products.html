@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arun E-commerce | Products</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Arun E-commerce</h1>
+      <nav>
+        <a href="products.html">Products</a>
+        <a href="cart.html">Cart</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="index.html">Logout</a>
+      </nav>
+    </header>
+    <main>
+      <section class="search-bar">
+        <input type="text" id="search-input" placeholder="Search products..." />
+        <button id="search-btn" type="button">Search</button>
+      </section>
+      <section class="product-list" id="product-list">
+        <!-- Products will be rendered by JS -->
+      </section>
+      <div class="pagination">
+        <button disabled>&laquo; Prev</button>
+        <span>Page 1 of 1</span>
+        <button disabled>Next &raquo;</button>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2024 Arun E-commerce</p>
+    </footer>
+    <script src="js/cart.js"></script>
+    <script>
+      function renderProducts(filter = "") {
+        const list = document.getElementById("product-list");
+        const search = filter.trim().toLowerCase();
+        list.innerHTML = "";
+        PRODUCTS.forEach((p, i) => {
+          if (!p.name.toLowerCase().includes(search)) return;
+          list.innerHTML += `
+            <div class="product-card"><span class="product-number">${
+              i + 1
+            }</span>
+              <div class="product-title">${p.name}</div>
+              <p class="price">₹${p.price.toLocaleString("en-IN")}</p>
+              <button onclick="addToCart(${
+                p.id
+              }); window.location='cart.html';">Add to Cart</button>
+            </div>
+          `;
+        });
+      }
+      renderProducts();
+      document
+        .getElementById("search-input")
+        .addEventListener("input", function () {
+          renderProducts(this.value);
+        });
+      document
+        .getElementById("search-btn")
+        .addEventListener("click", function () {
+          renderProducts(document.getElementById("search-input").value);
+        });
+    </script>
+  </body>
+</html>

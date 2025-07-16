@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Orders | Arun E-commerce</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="products.html">Products</a>
+        <a href="cart.html">Cart</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="index.html">Logout</a>
+      </nav>
+    </header>
+    <main>
+      <section class="order-confirmation">
+        <h2>Your Order Details</h2>
+        <div class="order-summary" id="order-summary">
+          <!-- Order details will be rendered by JS -->
+        </div>
+        <a href="cart.html" class="back-to-products">Back to Cart</a>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2024 Arun E-commerce</p>
+    </footer>
+    <script src="js/cart.js"></script>
+    <script>
+      function renderOrder() {
+        const orderDiv = document.getElementById("order-summary");
+        const order = JSON.parse(localStorage.getItem("lastOrder") || "null");
+        if (!order || order.length === 0) {
+          orderDiv.innerHTML = `<p style='color:#764ba2; font-size:1.1rem;'>No orders yet. Place an order from the <a href='cart.html' style='color:#667eea;'>cart</a>.</p>`;
+          return;
+        }
+        let total = 0;
+        let html = `<h3>Order #1001</h3><ul>`;
+        order.forEach((item) => {
+          const product = PRODUCTS.find((p) => p.id === item.id);
+          const itemTotal = product.price * item.qty;
+          total += itemTotal;
+          html += `<li>${product.name} x ${
+            item.qty
+          } - ₹${itemTotal.toLocaleString("en-IN")}</li>`;
+        });
+        html += `</ul><p><strong>Total:</strong> ₹${total.toLocaleString(
+          "en-IN"
+        )}</p>`;
+        orderDiv.innerHTML = html;
+      }
+      renderOrder();
+    </script>
+  </body>
+</html>

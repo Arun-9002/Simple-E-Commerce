@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cart | Arun E-commerce</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="products.html">Products</a>
+        <a href="cart.html">Cart</a>
+        <a href="my-orders.html">My Orders</a>
+        <a href="index.html">Logout</a>
+      </nav>
+    </header>
+    <main>
+      <section class="cart-section">
+        <table class="cart-table" id="cart-table" style="display: none">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="cart-body"></tbody>
+        </table>
+        <div class="cart-summary" id="cart-summary" style="display: none">
+          <p><strong>Subtotal:</strong> ₹<span id="cart-subtotal">0</span></p>
+          <form id="place-order-form">
+            <button class="place-order" type="submit">Place Order</button>
+          </form>
+        </div>
+        <p
+          id="empty-cart-msg"
+          style="
+            color: #764ba2;
+            font-size: 1.2rem;
+            margin: 2rem 0;
+            text-align: center;
+          "
+        >
+          Your cart is empty. Please add products from the
+          <a href="products.html" style="color: #667eea">Products</a> page.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; 2024 Arun E-commerce</p>
+    </footer>
+    <script src="js/cart.js"></script>
+    <script>
+      function renderCart() {
+        const cart = getCart();
+        const tbody = document.getElementById("cart-body");
+        const table = document.getElementById("cart-table");
+        const summary = document.getElementById("cart-summary");
+        const subtotalSpan = document.getElementById("cart-subtotal");
+        const emptyMsg = document.getElementById("empty-cart-msg");
+        tbody.innerHTML = "";
+        let subtotal = 0;
+        if (cart.length === 0) {
+          table.style.display = "none";
+          summary.style.display = "none";
+          emptyMsg.style.display = "block";
+          return;
+        }
+        table.style.display = "";
+        summary.style.display = "";
+        emptyMsg.style.display = "none";
+        cart.forEach((item) => {
+          const product = PRODUCTS.find((p) => p.id === item.id);
+          const total = product.price * item.qty;
+          subtotal += total;
+          tbody.innerHTML += `
+          <tr>
+            <td>${product.name}</td>
+            <td><input type="number" min="1" value="${
+              item.qty
+            }" onchange="updateCartQty(${
+            item.id
+          }, this.value); renderCart();"></td>
+            <td>₹${product.price.toLocaleString("en-IN")}</td>
+            <td>₹${total.toLocaleString("en-IN")}</td>
+            <td><button onclick="updateCartQty(${
+              item.id
+            }, this.parentNode.parentNode.querySelector('input').value); renderCart();">Update</button> <button onclick="removeFromCart(${
+            item.id
+          }); renderCart();">Remove</button></td>
+          </tr>
+        `;
+        });
+        subtotalSpan.textContent = subtotal.toLocaleString("en-IN");
+      }
+      renderCart();
+      document.getElementById("place-order-form").onsubmit = function (e) {
+        e.preventDefault();
+        const cart = getCart();
+        if (cart.length > 0) saveOrder(cart);
+        clearCart();
+        window.location = "my-orders.html";
+      };
+    </script>
+  </body>
+</html>
